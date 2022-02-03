@@ -59,7 +59,7 @@ app.post('/api/persons', (request, response) => {
         return response.status(400).json({
             error:'name must be unique'
     })}
-    
+
     const id = Math.round(Math.random() * 100000)
     const person = {
         id: id,
@@ -109,7 +109,7 @@ app.put('/api/persons/:id', (request, response)=>{
   response.json(person)
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
