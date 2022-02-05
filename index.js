@@ -28,40 +28,40 @@ app.post('/api/persons', (request, response,next) => {
   const body = request.body
 
   if (!body.name || !body.number) {
-    return response.status(400).json({error: 'name or number missing'})
-    }
+    return response.status(400).json({ error: 'name or number missing' })
+  }
 
-    const person = new Person({
-        name: body.name,
-        number: body.number
-    })
-    person.save()
+  const person = new Person({
+    name: body.name,
+    number: body.number
+  })
+  person.save()
     .then(savedPerson => response.json(savedPerson))
     .catch(error => next(error))
-  })
-
-app.get('/api/persons', (request, response) => {
-  Person.find({})
-  .then(persons => response.json(persons))
-  .catch(error => next(error))
 })
 
-app.get('/api/persons/:id', (request, response) => {
-    Person.findById(request.params.id)
-    .then(person=>response.json(person))
+app.get('/api/persons', (request, response,next) => {
+  Person.find({})
+    .then(persons => response.json(persons))
     .catch(error => next(error))
-  })
+})
+
+app.get('/api/persons/:id', (request, response,next) => {
+  Person.findById(request.params.id)
+    .then(person => response.json(person))
+    .catch(error => next(error))
+})
 
 app.delete('/api/persons/:id', (request, response,next) => {
-    Person.findByIdAndDelete(request.params.id)
-      .then(()=>{
+  Person.findByIdAndDelete(request.params.id)
+    .then(() => {
       response.status(204).end()})
-      .catch(error => next(error))
-  })
+    .catch(error => next(error))
+})
 
 app.put('/api/persons/:id', (request, response, next) => {
   const body = request.body
-  personToUpdate = {
+  const personToUpdate = {
     name: body.name,
     number: body.number
   }
@@ -70,7 +70,7 @@ app.put('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
- 
+
 const unknownEndpoint = (error,request, response) => {
   response.status(404).send({ error: `${error}` })
 }
@@ -78,13 +78,13 @@ const unknownEndpoint = (error,request, response) => {
 app.use(unknownEndpoint)
 
 const errorHandler = (error, req, res, next) => {
-console.log(error)
-if (error.name === 'CastError' && error.kind === 'ObjectId') {
-  return res.status(400).send({ error: 'Improper id format' })
-}
-else if (error.name === 'ValidationError') {
-  return res.status(400).send({ error: error.message })
-}
+  console.log(error)
+  if (error.name === 'CastError' && error.kind === 'ObjectId') {
+    return res.status(400).send({ error: 'Improper id format' })
+  }
+  else if (error.name === 'ValidationError') {
+    return res.status(400).send({ error: error.message })
+  }
 
   next(error)
 }
